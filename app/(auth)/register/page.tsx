@@ -50,13 +50,26 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex bg-[#080C16] text-white">
       {/* LEFT IMAGE */}
-      <div className="hidden lg:flex flex-1 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-purple-600/30 to-black" />
+      <div className="hidden lg:flex flex-1 relative overflow-hidden">
+        {/* Background image */}
+        <img
+          src="https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80&w=1920&auto=format&fit=crop"
+          alt="Register highlight"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/40 via-purple-600/30 to-black/80" />
+
+        {/* Content */}
         <div className="relative z-10 flex items-end p-12">
-          <div>
-            <h3 className="text-3xl font-bold">Comece sua jornada visual</h3>
-            <p className="mt-2 text-white/70 max-w-md">
-              Crie sua conta e organize suas imagens com estilo.
+          <div className="max-w-md">
+            <h3 className="text-3xl font-bold leading-tight">
+              Comece sua jornada visual
+            </h3>
+            <p className="mt-3 text-white/70">
+              Crie sua conta e organize suas imagens com estilo, controle e
+              rapidez.
             </p>
           </div>
         </div>
@@ -134,7 +147,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <Button disabled={isLoading} className="w-full">
+            <Button disabled={isLoading} variant="glow" className="w-full py-3">
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="animate-spin" size={18} />
