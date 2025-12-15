@@ -6,25 +6,25 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  role?: "user" | "admin"; // role permitida
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, role }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.replace("/login"); // redireciona para login se não estiver logado
+    if (!isLoading) {
+      if (!user) {
+        router.replace("/login"); // não logado
+      } else if (role && user.role.toLowerCase() !== role) {
+        router.replace("/admin/dashboard"); // logado, mas sem permissão
+      }
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, role, router]);
 
-  // Enquanto carrega ou verifica login, pode mostrar loader
-  if (isLoading || !user) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Carregando...
-      </div>
-    );
+  if (isLoading || !user || (role && user.role.toLowerCase() !== role)) {
+    return <div className="flex justify-center items-center h-screen">Carregando...</div>;
   }
 
   return <>{children}</>;
