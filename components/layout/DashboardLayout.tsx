@@ -120,7 +120,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   {user?.name}
                 </p>
                 <p className="text-sm text-muted-foreground capitalize">
-                  {user?.role}
+                  {user?.role}0
                 </p>
               </div>
             </div>

@@ -1,11 +1,18 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Outfit';
+  src: url('../assets/fonts/Outfit.ttf');
+}
 
-/* @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&display=swap'); */
+
+* {
+  font-family: 'Outfit', sans-serif;
+}
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #080C16;
 }
 
 @theme inline {
@@ -15,9 +22,18 @@
   --font-mono: var(--font-geist-mono);
 }
 
+
+/* DARK MODE VIA CLASSE (ESSENCIAL) */
+.dark {
+  --background: #080C16;
+  --foreground: #ededed;
+}
+
+/* opcional: fallback se não existir ThemeContext */
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #080C16;
     --foreground: #ededed;
   }
 }

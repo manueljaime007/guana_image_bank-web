@@ -1,99 +1,94 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+"use client";
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { apiConfig } from "@/config/api";
 
 interface User {
-  id: string;
-  email: string;
+  id: number;
   name: string;
-  role: 'user' | 'admin';
-  avatar?: string;
-  createdAt: Date;
+  email: string;
+  role: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demonstration
-const mockUsers: User[] = [
-  {
-    id: '1',
-    email: 'admin@imagehub.com',
-    name: 'Admin User',
-    role: 'admin',
-    createdAt: new Date('2024-01-01'),
-  },
-  {
-    id: '2',
-    email: 'user@imagehub.com',
-    name: 'Demo User',
-    role: 'user',
-    createdAt: new Date('2024-06-15'),
-  },
-];
+// Função auxiliar para chamadas à API
+async function postJSON(url: string, body: any) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || "Erro na requisição");
+  }
+
+  return res.json();
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Ao carregar a aplicação, tentar restaurar sessão
   useEffect(() => {
-    // Check for saved session
-    const savedUser = localStorage.getItem('imagehub_user');
-    if (savedUser) {
+    const savedUser = localStorage.getItem("imagehub_user");
+    const savedToken = localStorage.getItem("imagehub_token");
+
+    if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser));
     }
+
     setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    const foundUser = mockUsers.find((u) => u.email === email);
-    if (!foundUser) {
-      // Create new user on login for demo purposes
-      const newUser: User = {
-        id: Date.now().toString(),
-        email,
-        name: email.split('@')[0],
-        role: 'user',
-        createdAt: new Date(),
-      };
-      setUser(newUser);
-      localStorage.setItem('imagehub_user', JSON.stringify(newUser));
-    } else {
-      setUser(foundUser);
-      localStorage.setItem('imagehub_user', JSON.stringify(foundUser));
+    try {
+      const data = await postJSON(apiConfig.endpoints.auth.login, { email, password });
+      
+      const { user: loggedUser, tokens } = data;
+
+      // Salvar token e usuário no localStorage
+      localStorage.setItem("imagehub_token", tokens.accessToken);
+      localStorage.setItem("imagehub_user", JSON.stringify(loggedUser));
+
+      setUser(loggedUser);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    const newUser: User = {
-      id: Date.now().toString(),
-      email,
-      name,
-      role: 'user',
-      createdAt: new Date(),
-    };
-    setUser(newUser);
-    localStorage.setItem('imagehub_user', JSON.stringify(newUser));
-    setIsLoading(false);
+    try {
+      const data = await postJSON(apiConfig.endpoints.auth.register, { name, email, password });
+      
+      const { user: newUser, tokens } = data;
+
+      localStorage.setItem("imagehub_token", tokens.accessToken);
+      localStorage.setItem("imagehub_user", JSON.stringify(newUser));
+
+      setUser(newUser);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
+    localStorage.removeItem("imagehub_token");
+    localStorage.removeItem("imagehub_user");
     setUser(null);
-    localStorage.removeItem('imagehub_user');
   };
 
   return (
@@ -105,8 +100,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error("useAuth deve ser usado dentro de AuthProvider");
   return context;
 }

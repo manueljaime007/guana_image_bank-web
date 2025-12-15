@@ -1,20 +1,48 @@
-import { Moon, Sun } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useTheme } from '@/contexts/ThemeContext';
+"use client";
+
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
       onClick={toggleTheme}
-      className="relative overflow-hidden"
+      aria-label="Alternar tema"
+      className="
+        relative h-10 w-10 rounded-full
+        flex items-center justify-center
+        bg-white/5 border 
+        border-white/10
+        hover:bg-white/10 transition
+      "
     >
-      <Sun className={`h-5 w-5 transition-all duration-300 ${theme === 'dark' ? 'rotate-90 scale-0' : 'rotate-0 scale-100'}`} />
-      <Moon className={`absolute h-5 w-5 transition-all duration-300 ${theme === 'dark' ? 'rotate-0 scale-100' : '-rotate-90 scale-0'}`} />
-      <span className="sr-only">Alternar tema</span>
-    </Button>
+      {/* SUN */}
+      <Sun
+        size={18}
+        className={`
+          absolute transition-all duration-300
+          ${
+            theme === "dark"
+              ? "scale-0 rotate-90 opacity-0"
+              : "scale-100 rotate-0 opacity-100"
+          }
+        `}
+      />
+
+      {/* MOON */}
+      <Moon
+        size={18}
+        className={`
+          absolute transition-all duration-300
+          ${
+            theme === "dark"
+              ? "scale-100 rotate-0 opacity-100"
+              : "scale-0 -rotate-90 opacity-0"
+          }
+        `}
+      />
+    </button>
   );
 }
