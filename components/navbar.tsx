@@ -10,7 +10,7 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 w-full z-50 bg-[#080C16]/80 backdrop-blur border-b border-white/10">
-      <div className="max-w-[85rem] mx-auto h-16 px-6 flex items-center justify-between">
+      <div className="max-w-340 mx-auto h-16 px-6 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-cyan-400">
           ImageHub
         </Link>
@@ -22,7 +22,7 @@ export function Navbar() {
             {/* <button className="text-sm text-white/70 hover:text-white">
               Entrar
               </button> */}
-            <Button className="py-1">Entrar</Button>
+            <Button variant="outline" className="py-1">Entrar</Button>
           </Link>
 
           <Link href="/register">

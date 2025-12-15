@@ -1,3 +1,4 @@
+import PrivateRoute from "@/components/auth/PrivateRoute";
 import { ImageProvider } from "@/contexts/ImageContext";
 import { Metadata } from "next";
 
@@ -10,7 +11,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      <ImageProvider>{children};</ImageProvider>;
+      <PrivateRoute>
+        <ImageProvider>{children};</ImageProvider>;
+      </PrivateRoute>
     </>
   );
 }

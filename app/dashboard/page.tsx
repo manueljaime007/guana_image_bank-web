@@ -1,23 +1,32 @@
 "use client";
 
+import { apiConfig } from "@/config/api";
 import Link from "next/link";
 import { Images, Upload, TrendingUp, Calendar } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useImages } from "@/contexts/ImageContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Button from "@/components/ui/button";
+import { useEffect } from "react";
 
 export default function Dashboard() {
+  const { images, getUserImages, fetchAllImages } = useImages();
   const { user } = useAuth();
-  const { images, getUserImages } = useImages();
 
-  const userImages = user ? getUserImages(user.id) : [];
-  const recentImages = userImages.slice(0, 4);
+  useEffect(() => {
+    fetchAllImages();
+  }, [fetchAllImages]);
+
+  // const userImages = user ? getUserImages(user.id) : []; // só em casos complexos.
+
+  const myImages = user ? images.filter((img) => img.userId === user.id) : [];
+
+  const recentImages = myImages.slice(0, 4);
 
   const stats = [
     {
       label: "Minhas Imagens",
-      value: userImages.length,
+      value: myImages.length,
       icon: Images,
       color: "bg-cyan-400/10 text-cyan-400",
     },
@@ -29,13 +38,18 @@ export default function Dashboard() {
     },
     {
       label: "Este Mês",
-      value: userImages.filter(
+      value: myImages.filter(
         (img) => new Date(img.createdAt).getMonth() === new Date().getMonth()
       ).length,
       icon: Calendar,
       color: "bg-orange-500/10 text-orange-500",
     },
   ];
+
+  // console.log("Imagens", images);
+  // console.log(images.length);
+  // console.log("Minhas imagens", myImages);
+  // console.log(getUserImages(user!.id));
 
   return (
     <DashboardLayout>
@@ -92,35 +106,42 @@ export default function Dashboard() {
 
           {recentImages.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {recentImages.map((image) => (
-                <div
-                  key={image.id}
-                  className="rounded-xl overflow-hidden bg-white/5 border border-white/10"
-                >
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={image.url}
-                      alt={image.description}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <p className="text-sm font-medium text-white truncate">
-                      {image.description}
-                    </p>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {image.tags.slice(0, 2).map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs px-2 py-0.5 rounded-full bg-cyan-400/10 text-cyan-400"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+              {recentImages.map((image) => {
+                const imageUrl = `http://localhost:4007/${image.filePath.replace(
+                  /\\/g,
+                  "/"
+                )}`;
+                const {} = image;
+                return (
+                  <div
+                    key={image.id}
+                    className="rounded-xl overflow-hidden bg-white/5 border border-white/10"
+                  >
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={imageUrl}
+                        alt={image.description}
+                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm font-medium text-white truncate">
+                        {image.description}
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {image.tags.slice(0, 2).map((tag) => (
+                          <span
+                            key={tag.id}
+                            className="text-xs px-2 py-0.5 rounded-full bg-cyan-400/10 text-cyan-400"
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="rounded-xl p-12 text-center bg-white/5 border border-white/10">

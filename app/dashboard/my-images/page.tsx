@@ -16,16 +16,19 @@ import { toast } from "sonner";
 
 export default function MyImagesPage() {
   const { user } = useAuth();
-  const { getUserImages, deleteImage, updateImage } = useImages();
+
+  const { images: allImages } = useImages();
+
+  const userImages = user
+    ? allImages.filter((img) => img.userId === user.id)
+    : [];
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [editDescription, setEditDescription] = useState("");
   const [mode, setMode] = useState<"delete" | "edit" | null>(null);
 
-  const images = user ? getUserImages(user.id) : [];
-
-  const filteredImages = images.filter(
+  const filteredImages = userImages.filter(
     (img) =>
       img.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       img.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -47,21 +50,21 @@ export default function MyImagesPage() {
     setMode(null);
   }
 
-  function confirmDelete() {
-    if (!selectedImage) return;
-    deleteImage(selectedImage.id);
-    toast.success("Imagem excluída");
-    closeModal();
-  }
+  // function confirmDelete() {
+  //   if (!selectedImage) return;
+  //   deleteImage(selectedImage.id);
+  //   toast.success("Imagem excluída");
+  //   closeModal();
+  // }
 
-  function confirmEdit() {
-    if (!selectedImage || !editDescription.trim()) return;
-    updateImage(selectedImage.id, {
-      description: editDescription.trim(),
-    });
-    toast.success("Imagem atualizada");
-    closeModal();
-  }
+  // function confirmEdit() {
+  //   if (!selectedImage || !editDescription.trim()) return;
+  //   updateImage(selectedImage.id, {
+  //     description: editDescription.trim(),
+  //   });
+  //   toast.success("Imagem atualizada");
+  //   closeModal();
+  // }
 
   return (
     <PrivateRoute role="USER">
@@ -72,7 +75,8 @@ export default function MyImagesPage() {
             <div>
               <h1 className="text-3xl font-bold text-white">Minhas Imagens</h1>
               <p className="text-white/60">
-                {images.length} {images.length === 1 ? "imagem" : "imagens"}
+                {userImages.length}{" "}
+                {userImages.length === 1 ? "imagem" : "imagens"}
               </p>
             </div>
 

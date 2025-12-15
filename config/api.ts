@@ -12,7 +12,12 @@ export const apiConfig = {
         },
         // Adicione outros endpoints conforme sua API
         users: `${API_BASE_URL}/users`,
-        images: `${API_BASE_URL}/images`,
+        // images: `${API_BASE_URL}/images`,
+        images: {
+            all: `${API_BASE_URL}/images/all`,
+            userImages: `${API_BASE_URL}/images/user/id`,
+            myImages: `${API_BASE_URL}/images/me/images`
+        }
     },
     headers: {
         'Content-Type': 'application/json',

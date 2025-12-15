@@ -107,6 +107,7 @@ export default function LoginPage() {
           // src="/images/login-bg.jpg"
           src="https://images.unsplash.com/photo-1572883454114-1cf0031ede2a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHIlQzMlQTlkaW9zfGVufDB8fDB8fHww"
           alt=""
+          loading="lazy"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
 

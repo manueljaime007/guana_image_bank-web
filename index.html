@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzY1Nzg4MDY3LCJleHAiOjE3NjU3ODg5Njd9.N8cxubeJ5OaEXraCJFB1dFm-JQf1mZF1Le-c1VFSfMU";
+        
+      fetch("http://localhost:3000/api/v1/images/me/images", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then(console.log);
+    </script>
+  </body>
+</html>

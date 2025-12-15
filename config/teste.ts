@@ -29,3 +29,10 @@ export async function apiLogin(email: string, password: string): Promise<LoginRe
     const data: LoginResponse = await response.json();
     return data;
 }
+
+export async function getAll(url: string) {
+    const res = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+}
