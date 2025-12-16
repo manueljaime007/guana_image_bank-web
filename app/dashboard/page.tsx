@@ -99,7 +99,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold text-white">
               Imagens Recentes
             </h2>
-            <Link href="/my-images">
+            <Link href="/dashboard/my-images">
               <Button variant="primary">Ver todas</Button>
             </Link>
           </div>
@@ -111,7 +111,6 @@ export default function Dashboard() {
                   /\\/g,
                   "/"
                 )}`;
-                const {} = image;
                 return (
                   <div
                     key={image.id}
